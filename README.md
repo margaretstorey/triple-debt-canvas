@@ -24,7 +24,9 @@ Open `index.html` in any browser.
 
 ## Feedback
 
-Issues and suggestions are welcome. The canvas improved after feedback from Titus Winters, and more is wanted: does the AI practices section match how your team works, and is a debt type missing?
+Questions, ideas, or how your team uses it? Start a thread in the [Discussions](../../discussions) tab. Bugs or fixes can go in [Issues](../../issues), or email mstorey@uvic.ca.
+
+The canvas improved after feedback from Titus Winters. I'd especially like to hear: does the AI practices section match how your team works? What other practices could we add to this?
 
 ## License
 
