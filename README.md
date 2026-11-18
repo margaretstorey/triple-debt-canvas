@@ -28,4 +28,4 @@ Issues and suggestions are welcome. The canvas improved after feedback from Titu
 
 ## License
 
-Creative Commons Attribution 4.0 International (CC BY 4.0). You may share and adapt it with attribution to the paper above.
+MIT License. See the [LICENSE](LICENSE) file. If you adapt or share this canvas, please credit the Triple Debt Model paper above.
