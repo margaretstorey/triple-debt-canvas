@@ -1,4 +1,4 @@
-Triple Debt Sprint Canvas
+# Triple Debt Sprint Canvas
 
 A one-file, printable canvas for teams to reflect on **technical**, **cognitive** and **intent** debt each sprint, including how they use AI tools and commitments they make to address these debts.
 
