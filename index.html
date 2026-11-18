@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Triple Debt Sprint Canvas</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f5f4f0;color:#1a1a1a;min-height:100vh;padding:2rem 1rem}
+.page{max-width:1000px;margin:0 auto}
+h1{font-size:22px;font-weight:600;margin-bottom:4px}
+.subtitle{font-size:13px;color:#666;margin-bottom:4px}
+.byline{font-size:11px;color:#999}
+.blank-label{display:none;font-size:13px;font-weight:600;color:#D85A30;margin-bottom:4px}
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:12px}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
+.cell{background:#fff;border-radius:12px;border:1px solid #e2e0db;padding:14px}
+.cell-full{background:#fff;border-radius:12px;border:1px solid #e2e0db;padding:14px;margin-bottom:12px}
+.cell-header{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.dot{width:11px;height:11px;border-radius:50%;flex-shrink:0}
+.dt{background:#D85A30}.dc{background:#1D9E75}.di{background:#7F77DD}
+.ds{background:#378ADD}.dai{background:#9B59B6}.dp{background:#E67E22}.dsp{background:#16A085}
+.cell-label{font-size:13px;font-weight:600}
+.cell-desc{font-size:11px;color:#777;margin-bottom:10px;line-height:1.5}
+.prompt{font-size:11px;color:#555;margin-bottom:3px;font-weight:500}
+input[type=text],textarea{width:100%;border:none;border-bottom:1px solid #ddd;background:transparent;font-size:12px;color:#1a1a1a;padding:4px 0;margin-bottom:8px;outline:none;font-family:inherit;resize:none}
+textarea{overflow:hidden;white-space:pre-wrap}
+input[type=text]:focus,textarea:focus{border-bottom-color:#888}
+input[type=text]::placeholder,textarea::placeholder{color:#bbb}
+.tag-row{display:flex;flex-wrap:wrap;gap:5px;margin:4px 0 8px}
+.tag{font-size:11px;padding:3px 9px;border-radius:999px;border:1px solid #ddd;color:#888;cursor:pointer;user-select:none;transition:all 0.15s;background:#fff}
+.tag:hover{background:#f5f4f0}
+.tag.at{background:#FAECE7;color:#993C1D;border-color:#F0997B}
+.tag.ac{background:#E1F5EE;color:#0F6E56;border-color:#5DCAA5}
+.tag.ai{background:#EEEDFE;color:#534AB7;border-color:#AFA9EC}
+.level-row{display:flex;align-items:center;gap:8px;margin:6px 0 2px}
+.level-label{font-size:11px;color:#777;flex-shrink:0}
+.level-bar{flex:1;height:6px;border-radius:3px;background:#eee;overflow:hidden}
+.level-fill{height:100%;border-radius:3px;transition:width 0.1s}
+.ft{background:#D85A30}.fc{background:#1D9E75}.fi{background:#7F77DD}.fp{background:#E67E22}
+.level-val{font-size:11px;color:#777;width:20px;text-align:right}
+input[type=range]{width:100%;margin:2px 0 10px;accent-color:#888}
+.slider-blank-line{display:none;border-bottom:1px solid #999;margin:4px 0 10px;width:100%}
+.sdiv{font-size:10px;font-weight:600;color:#aaa;text-transform:uppercase;letter-spacing:0.06em;margin:10px 0 5px}
+.prac-grid{width:100%;border-collapse:collapse;font-size:11px;margin-top:6px}
+.prac-grid th{font-size:10px;font-weight:600;color:#aaa;text-transform:uppercase;letter-spacing:0.05em;padding:6px 8px;border-bottom:1px solid #e2e0db;text-align:left}
+.prac-grid td{padding:6px 8px;border-bottom:1px solid #f0ede8;vertical-align:top}
+.prac-grid tr:last-child td{border-bottom:none}
+.prac-grid input[type=text],.prac-grid textarea{margin-bottom:0;font-size:11px}
+.prac-grid select{font-size:11px;border:none;border-bottom:1px solid #ddd;background:transparent;color:#1a1a1a;padding:2px 0;outline:none;font-family:inherit;width:100%}
+.ai-grid{width:100%;border-collapse:collapse;font-size:11px;margin-top:6px}
+.ai-grid th{font-size:10px;font-weight:600;color:#aaa;text-transform:uppercase;letter-spacing:0.05em;padding:6px 8px;border-bottom:1px solid #e2e0db;text-align:left}
+.ai-grid td{padding:6px 8px;border-bottom:1px solid #f0ede8;vertical-align:top}
+.ai-grid tr:last-child td{border-bottom:none}
+.ai-grid input[type=text],.ai-grid textarea{margin-bottom:0;font-size:11px}
+.ai-grid input[type=checkbox]{width:14px;height:14px;accent-color:#9B59B6;cursor:pointer}
+.commit-goal{background:#f9f8f6;border-radius:8px;padding:10px 12px;margin-bottom:12px}
+.debt-col{border-top:3px solid #ddd;padding-top:10px}
+.debt-col-t{border-top-color:#D85A30}
+.debt-col-c{border-top-color:#1D9E75}
+.debt-col-i{border-top-color:#7F77DD}
+.ratio-row{display:flex;justify-content:space-between;font-size:11px;color:#555;margin:6px 0 2px}
+.footer{font-size:11px;color:#aaa;text-align:center;margin-top:1rem;padding-top:1rem;border-top:1px solid #e2e0db}
+.print-copy{display:none}
+
+@media(max-width:700px){.grid-3,.grid-2{grid-template-columns:1fr}}
+
+@media print{
+  body{background:#fff;padding:0.4rem;font-size:12px}
+  button{display:none!important}
+  .cell,.cell-full{break-inside:avoid;padding:10px;border-radius:8px}
+  .page{max-width:100%}
+  h1{font-size:18px}
+  .subtitle,.byline{font-size:10px}
+  .cell-label{font-size:12px}
+  .cell-desc{font-size:10px;margin-bottom:7px}
+  .prompt{font-size:10px}
+  .sdiv{font-size:9px;margin:7px 0 4px}
+  .tag{font-size:10px;padding:2px 6px}
+  .tag-row{gap:4px;margin:3px 0 6px}
+  input[type=text]::placeholder,textarea::placeholder{color:transparent!important}
+  .grid-3{gap:9px;margin-bottom:9px}
+  .grid-2{gap:9px;margin-bottom:9px}
+  .cell-full{margin-bottom:9px}
+  .level-row{margin:4px 0 2px}
+  .level-bar{height:5px}
+  input[type=range]{margin:2px 0 7px}
+  .ai-grid th,.ai-grid td,.prac-grid th,.prac-grid td{padding:4px 6px;font-size:10px}
+  .commit-goal{padding:8px 10px;margin-bottom:9px}
+  .debt-col{padding-top:8px}
+  .footer{font-size:10px;margin-top:7px;padding-top:7px}
+  .level-val{display:none!important}
+
+  /* print each text field as a plain block so all text shows */
+  textarea{display:none!important}
+  .print-copy{display:block;white-space:pre-wrap;word-break:break-word;font-size:11px;min-height:1.5em;border-bottom:1px solid #ddd;padding:4px 0;margin-bottom:5px}
+  .ai-grid .print-copy,.prac-grid .print-copy{margin-bottom:0;font-size:10px}
+}
+
+@media print{
+  body.blank .blank-label{display:block!important}
+  body.blank .print-copy{color:transparent!important}
+  body.blank .tag.at,body.blank .tag.ac,body.blank .tag.ai{background:#fff!important;color:#aaa!important;border-color:#ddd!important}
+  body.blank .level-fill{width:0%!important}
+  body.blank .level-val{display:none!important}
+  body.blank input[type=range]{display:none!important}
+  body.blank .slider-blank-line{display:block!important}
+  body.blank input[type=checkbox]{display:none!important}
+  body.blank select{color:transparent!important}
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- Header -->
+  <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:1rem">
+    <div>
+      <h1>Triple Debt Sprint Canvas</h1>
+      <div class="blank-label">— Blank Form —</div>
+      <div class="subtitle">Storey, M. (2026). <em>From Technical Debt to Cognitive and Intent Debt: Rethinking Software Health in the Age of AI.</em> ACM Queue. <a href="https://queue.acm.org/doi/10.1145/3807966" style="color:#666" target="_blank">doi:10.1145/3807966</a></div>
+      <div class="byline">Fill in each sprint, individually first and then together as a team.</div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:6px;margin-left:16px;margin-top:4px;flex-shrink:0">
+      <button onclick="window.print()" style="font-size:12px;padding:7px 16px;border-radius:8px;border:1px solid #1a1a1a;background:#1a1a1a;color:#fff;cursor:pointer;font-family:inherit">Print / export PDF</button>
+      <button onclick="printBlank()" style="font-size:12px;padding:7px 16px;border-radius:8px;border:1px solid #666;background:#fff;color:#333;cursor:pointer;font-family:inherit">Print blank form</button>
+    </div>
+  </div>
+
+  <!-- Team & sprint -->
+  <div class="grid-2" style="margin-bottom:12px">
+    <div class="cell">
+      <div class="cell-header"><span class="cell-label">Team &amp; sprint</span></div>
+      <div class="prompt">Team name</div>
+      <input type="text" id="team-name" placeholder="e.g. Payments team">
+      <div class="prompt">Your name (if completing individually)</div>
+      <input type="text" id="your-name" placeholder="e.g. Alice — individual reflection">
+      <div class="prompt">Sprint dates</div>
+      <input type="text" id="sprint-dates" placeholder="e.g. Nov 3 to Nov 14">
+    </div>
+    <div class="cell">
+      <div class="cell-header"><span class="cell-label">Sprint accomplishments</span></div>
+      <div class="cell-desc">What did your team accomplish this sprint? (2-3 sentences)</div>
+      <textarea id="accomplishments" rows="5" placeholder="e.g. We shipped the new checkout flow to 10% of users and refactored the auth module. We also wrote our first ADRs."></textarea>
+    </div>
+  </div>
+
+  <!-- Debt assessment -->
+  <div class="sdiv">Debt assessment — rate each type and note specific examples</div>
+  <div class="grid-3">
+    <div class="cell">
+      <div class="cell-header"><div class="dot dt"></div><span class="cell-label">Technical debt</span></div>
+      <div class="cell-desc">Lives in the code. Architecture, quality, test coverage, optionality.</div>
+      <div class="prompt">What's messy or brittle right now?</div>
+      <input type="text" id="td1" placeholder="e.g. no tests on payments module">
+      <input type="text" id="td2" placeholder="e.g. hardcoded config scattered everywhere">
+      <div class="sdiv">Current level (1 = low, 10 = critical)</div>
+      <div class="level-row">
+        <div class="level-label" style="width:48px">Technical</div>
+        <div class="level-bar"><div class="level-fill ft" id="bar-tech" style="width:0%"></div></div>
+        <div class="level-val" id="val-tech">1</div>
+      </div>
+      <input type="range" min="1" max="10" value="1" id="range-tech" oninput="setBar('tech',this.value)">
+      <div class="slider-blank-line"></div>
+      <div class="prompt">What issues concern you? (select all that apply)</div>
+      <div class="tag-row">
+        <span class="tag" onclick="tog(this,'t')">architecture</span>
+        <span class="tag" onclick="tog(this,'t')">tests</span>
+        <span class="tag" onclick="tog(this,'t')">security</span>
+        <span class="tag" onclick="tog(this,'t')">performance</span>
+        <span class="tag" onclick="tog(this,'t')">dependencies</span>
+        <span class="tag" onclick="tog(this,'t')">scalability</span>
+        <span class="tag" onclick="tog(this,'t')">AI-generated code quality</span>
+        <span class="tag" onclick="tog(this,'t')">observability</span>
+        <span class="tag" onclick="tog(this,'t')">data model</span>
+      </div>
+    </div>
+
+    <div class="cell">
+      <div class="cell-header"><div class="dot dc"></div><span class="cell-label">Cognitive debt</span></div>
+      <div class="cell-desc">Lives in people. Shared understanding and mental models across the team.</div>
+      <div class="prompt">Where is understanding fragile or siloed?</div>
+      <input type="text" id="cd1" placeholder="e.g. only one person understands the auth flow">
+      <input type="text" id="cd2" placeholder="e.g. AI-generated code no one has reviewed">
+      <div class="sdiv">Current level (1 = low, 10 = critical)</div>
+      <div class="level-row">
+        <div class="level-label" style="width:48px">Cognitive</div>
+        <div class="level-bar"><div class="level-fill fc" id="bar-cog" style="width:0%"></div></div>
+        <div class="level-val" id="val-cog">1</div>
+      </div>
+      <input type="range" min="1" max="10" value="1" id="range-cog" oninput="setBar('cog',this.value)">
+      <div class="slider-blank-line"></div>
+      <div class="prompt">Signals observed (select all that apply)</div>
+      <div class="tag-row">
+        <span class="tag" onclick="tog(this,'c')">no shared mental model</span>
+        <span class="tag" onclick="tog(this,'c')">fear of breaking things</span>
+        <span class="tag" onclick="tog(this,'c')">slow onboarding</span>
+        <span class="tag" onclick="tog(this,'c')">confusion debugging</span>
+        <span class="tag" onclick="tog(this,'c')">basic questions in standups</span>
+        <span class="tag" onclick="tog(this,'c')">context switching cost</span>
+      </div>
+    </div>
+
+    <div class="cell">
+      <div class="cell-header"><div class="dot di"></div><span class="cell-label">Intent debt</span></div>
+      <div class="cell-desc">Lives in artifacts (or their absence). Rationale, goals, constraints, decisions.</div>
+      <div class="prompt">What's undocumented, forgotten, or lost?</div>
+      <input type="text" id="id1" placeholder="e.g. no record of why we chose NoSQL">
+      <input type="text" id="id2" placeholder="e.g. AI prompts not saved or versioned">
+      <div class="sdiv">Current level (1 = low, 10 = critical)</div>
+      <div class="level-row">
+        <div class="level-label" style="width:48px">Intent</div>
+        <div class="level-bar"><div class="level-fill fi" id="bar-intent" style="width:0%"></div></div>
+        <div class="level-val" id="val-intent">1</div>
+      </div>
+      <input type="range" min="1" max="10" value="1" id="range-intent" oninput="setBar('intent',this.value)">
+      <div class="slider-blank-line"></div>
+      <div class="prompt">What's missing (select all that apply)</div>
+      <div class="tag-row">
+        <span class="tag" onclick="tog(this,'i')">ADRs</span>
+        <span class="tag" onclick="tog(this,'i')">design rationale</span>
+        <span class="tag" onclick="tog(this,'i')">constraints doc</span>
+        <span class="tag" onclick="tog(this,'i')">product spec</span>
+        <span class="tag" onclick="tog(this,'i')">onboarding guide</span>
+        <span class="tag" onclick="tog(this,'i')">no record of pivots</span>
+        <span class="tag" onclick="tog(this,'i')">versioning of prompts/agent instructions</span>
+        <span class="tag" onclick="tog(this,'i')">user research not linked to decisions</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Software practices -->
+  <div class="cell-full">
+    <div class="cell-header"><div class="dot dsp"></div><span class="cell-label">Software practices</span></div>
+    <div class="cell-desc">How is your team handling requirements, change review, verification and observability? These directly affect all three debt types.</div>
+    <table class="prac-grid">
+      <thead>
+        <tr>
+          <th style="width:20%">Practice</th>
+          <th style="width:12%">Status</th>
+          <th style="width:34%">How are you doing this?</th>
+          <th style="width:34%">Gaps or concerns?</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Requirements &amp; specs</strong><br><span style="color:#999;font-size:10px">How you define what to build</span></td>
+          <td><select id="prac-req-status"><option value="">—</option><option>In place</option><option>Partial</option><option>Not yet</option></select></td>
+          <td><input type="text" id="prac-req-how" placeholder="e.g. user stories in GitHub Issues"></td>
+          <td><input type="text" id="prac-req-gaps" placeholder="e.g. not linked to code or decisions"></td>
+        </tr>
+        <tr>
+          <td><strong>Change review</strong><br><span style="color:#999;font-size:10px">How you check changes before they land</span></td>
+          <td><select id="prac-rev-status"><option value="">—</option><option>In place</option><option>Partial</option><option>Not yet</option></select></td>
+          <td><input type="text" id="prac-rev-how" placeholder="e.g. PRs required, branch protection, AI diff reviews"></td>
+          <td><input type="text" id="prac-rev-gaps" placeholder="e.g. no required reviewers, AI changes not reviewed"></td>
+        </tr>
+        <tr>
+          <td><strong>Verification</strong><br><span style="color:#999;font-size:10px">How you check requirements are met</span></td>
+          <td><select id="prac-ver-status"><option value="">—</option><option>In place</option><option>Partial</option><option>Not yet</option></select></td>
+          <td><input type="text" id="prac-ver-how" placeholder="e.g. e2e tests for critical flows, user testing"></td>
+          <td><input type="text" id="prac-ver-gaps" placeholder="e.g. no automated tests yet"></td>
+        </tr>
+        <tr>
+          <td><strong>Observability</strong><br><span style="color:#999;font-size:10px">How you know it works and what users do</span></td>
+          <td><select id="prac-obs-status"><option value="">—</option><option>In place</option><option>Partial</option><option>Not yet</option></select></td>
+          <td><input type="text" id="prac-obs-how" placeholder="e.g. error logging, analytics"></td>
+          <td><input type="text" id="prac-obs-gaps" placeholder="e.g. no insight into user behaviour"></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- AI practices -->
+  <div class="cell-full">
+    <div class="cell-header"><div class="dot dai"></div><span class="cell-label">AI practices</span></div>
+    <div class="cell-desc">Be honest about how your team is actually working with AI tools.</div>
+    <table class="ai-grid">
+      <thead>
+        <tr>
+          <th style="width:22%">Mode</th>
+          <th style="width:8%">Using?</th>
+          <th style="width:30%">Who owns understanding of what it built? <span style="font-weight:400;text-transform:none;letter-spacing:0;font-style:italic">How do they build this?</span></th>
+          <th style="width:40%">Mitigation — how do you reduce the risks of this mode? <span style="font-weight:400;font-style:italic;text-transform:none">Is this enforced by tooling, or does it depend on someone?</span></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Chat</strong><br><span style="color:#999;font-size:10px">Claude.ai, ChatGPT</span></td>
+          <td style="text-align:center"><input type="checkbox" id="ai-chat"></td>
+          <td><input type="text" id="ai-chat-owner" placeholder="e.g. everyone reviews before merging"></td>
+          <td><input type="text" id="ai-chat-context" placeholder="e.g. save conversation exports, version prompts"></td>
+        </tr>
+        <tr>
+          <td><strong>Inline AI</strong><br><span style="color:#999;font-size:10px">Copilot, Cursor, Windsurf</span></td>
+          <td style="text-align:center"><input type="checkbox" id="ai-inline"></td>
+          <td><input type="text" id="ai-inline-owner" placeholder="e.g. author of each file"></td>
+          <td><input type="text" id="ai-inline-context" placeholder="e.g. code review required before merge, CI checks"></td>
+        </tr>
+        <tr>
+          <td><strong>Agentic</strong><br><span style="color:#999;font-size:10px">Claude Code, agentic Cursor</span></td>
+          <td style="text-align:center"><input type="checkbox" id="ai-agent"></td>
+          <td><input type="text" id="ai-agent-owner" placeholder="e.g. named human per module"></td>
+          <td><input type="text" id="ai-agent-context" placeholder="e.g. CLAUDE.md versioned in repo, human reviews all diffs"></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Prototype to product -->
+  <div class="cell-full">
+    <div class="cell-header"><div class="dot dp"></div><span class="cell-label">Prototype → product journey check</span></div>
+    <div class="cell-desc">Where is your software on the prototype to product journey? This frames how seriously you should be taking the debt you just identified.</div>
+    <div style="display:flex;justify-content:space-between;font-size:10px;color:#aaa;margin-bottom:2px"><span>Prototype</span><span>Product</span></div>
+    <div class="level-row">
+      <div class="level-bar"><div class="level-fill fp" id="bar-proto" style="width:0%"></div></div>
+      <div class="level-val" id="val-proto">1</div>
+    </div>
+    <input type="range" min="1" max="10" value="1" id="range-proto" oninput="setBar('proto',this.value)">
+    <div class="slider-blank-line"></div>
+    <textarea id="proto-reflect" rows="2" placeholder="e.g. We're around a 7: in production, with real users depending on it."></textarea>
+  </div>
+
+  <!-- Commitments -->
+  <div class="cell-full">
+    <div class="cell-header"><div class="dot ds"></div><span class="cell-label">Commitments for this sprint</span></div>
+    <div class="cell-desc">What are you committing to build, fix, and learn? At least one owner per action.</div>
+    <div class="commit-goal">
+      <div class="prompt">Key product goal for this sprint</div>
+      <input type="text" id="sp-goal" placeholder="e.g. ship the new checkout flow">
+    </div>
+    <div class="grid-3">
+      <div class="debt-col debt-col-t">
+        <div class="cell-header"><div class="dot dt"></div><span class="cell-label">Reduce technical debt</span></div>
+        <div class="prompt">Action 1</div>
+        <textarea id="ra1" rows="2" placeholder="e.g. write tests for the payment module&#10;or refactor the most brittle part"></textarea>
+        <div class="prompt">Owner</div>
+        <input type="text" id="ro1" placeholder="Name">
+        <div class="prompt">Action 2</div>
+        <textarea id="ra2" rows="2" placeholder="e.g. fix hardcoded config&#10;or improve error handling"></textarea>
+        <div class="prompt">Owner</div>
+        <input type="text" id="ro1b" placeholder="Name">
+      </div>
+      <div class="debt-col debt-col-c">
+        <div class="cell-header"><div class="dot dc"></div><span class="cell-label">Improve shared understanding</span></div>
+        <div class="prompt">Action 1</div>
+        <textarea id="rb1" rows="2" placeholder="e.g. 30-min architecture walkthrough&#10;or contribution review"></textarea>
+        <div class="prompt">Owner</div>
+        <input type="text" id="ro2" placeholder="Name">
+        <div class="prompt">Action 2</div>
+        <textarea id="rb2" rows="2" placeholder="e.g. write tests for AI-generated code&#10;or record a short video of the system"></textarea>
+        <div class="prompt">Owner</div>
+        <input type="text" id="ro2b" placeholder="Name">
+      </div>
+      <div class="debt-col debt-col-i">
+        <div class="cell-header"><div class="dot di"></div><span class="cell-label">Capture intent</span></div>
+        <div class="prompt">Action 1</div>
+        <textarea id="rc1" rows="2" placeholder="e.g. write an ADR for a key decision&#10;or document a recent pivot and why"></textarea>
+        <div class="prompt">Owner</div>
+        <input type="text" id="ro3" placeholder="Name">
+        <div class="prompt">Action 2</div>
+        <textarea id="rc2" rows="2" placeholder="e.g. save and version your prompt library&#10;or link user research to a design decision"></textarea>
+        <div class="prompt">Owner</div>
+        <input type="text" id="ro3b" placeholder="Name">
+      </div>
+    </div>
+  </div>
+
+  <!-- Feature ratio -->
+  <div class="cell-full">
+    <div class="cell-header"><div class="dot ds"></div><span class="cell-label">Feature work vs everything else</span></div>
+    <div class="cell-desc">What is your approx. ratio of urgent feature work to non-urgent work (learning, technical debt, docs etc)? Is this sustainable?</div>
+    <div class="ratio-row">
+      <span>Features <strong id="ratio-feature">0</strong>%</span>
+      <span><strong id="ratio-other">100</strong>% Everything else</span>
+    </div>
+    <input type="range" min="0" max="100" value="0" id="range-ratio" oninput="setRatio(this.value)" style="accent-color:#378ADD">
+    <div class="slider-blank-line"></div>
+    <input type="text" id="ratio-reflect" placeholder="Add any reflections here">
+  </div>
+
+  <div class="footer">
+    Triple Debt Sprint Canvas · based on Storey, M. (2026) Triple Debt Model · mstorey@uvic.ca<br>
+    <span style="color:#bbb">Canvas design: Claude (Anthropic) · feedback: Titus Winters</span>
+  </div>
+</div>
+
+<script>
+function setBar(id,v){
+  document.getElementById('bar-'+id).style.width=((v-1)/9*100)+'%';
+  document.getElementById('val-'+id).textContent=v;
+}
+function setRatio(v){
+  document.getElementById('ratio-feature').textContent=v;
+  document.getElementById('ratio-other').textContent=100-v;
+}
+function tog(el,type){
+  var cls={'t':'at','c':'ac','i':'ai'}[type];
+  el.classList.toggle(cls);
+}
+function printBlank(){
+  document.body.classList.add('blank');
+  window.print();
+  document.body.classList.remove('blank');
+}
+
+/* Text fields: grow on screen, print as plain blocks so nothing is cut off */
+(function(){
+  document.querySelectorAll('input[type=text]').forEach(function(inp){
+    var ta=document.createElement('textarea');
+    ta.id=inp.id;ta.rows=1;ta.placeholder=inp.placeholder;ta.value=inp.value;
+    ta.className=inp.className;
+    if(inp.getAttribute('style'))ta.setAttribute('style',inp.getAttribute('style'));
+    inp.parentNode.replaceChild(ta,inp);
+  });
+  function grow(el){el.style.height='auto';el.style.height=el.scrollHeight+'px';}
+  function mirror(ta){
+    var c=ta.nextElementSibling;
+    if(!c||!c.classList.contains('print-copy')){
+      c=document.createElement('div');c.className='print-copy';
+      ta.parentNode.insertBefore(c,ta.nextSibling);
+    }
+    c.textContent=ta.value;
+  }
+  function sync(){document.querySelectorAll('textarea').forEach(function(t){grow(t);mirror(t);});}
+  document.addEventListener('input',function(e){
+    if(e.target.tagName==='TEXTAREA'){grow(e.target);mirror(e.target);}
+  });
+  window.addEventListener('beforeprint',sync);
+  window.addEventListener('load',sync);
+  sync();
+})();
+</script>
+</body>
+</html>
